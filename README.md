@@ -26,4 +26,4 @@ stream.php
     $obj->setHeaders();
     $obj->streamContent();
 
-    > Note: Update the supportedMimes of media files in the class.
+> Note: Update the supportedMimes of media files in the class.
