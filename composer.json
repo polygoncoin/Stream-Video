@@ -1,6 +1,7 @@
 {
     "name": "polygoncoin/streamvideo",
     "description": "Stream large audio / video files in browser.",
+    "keywords": ["Stream", "Heavy", "Huge", "Audio", "Video", "Player"],
     "type": "library",
     "license": "MIT",
     "authors": [
