@@ -6,15 +6,16 @@ Stream large audio / video files in browser.
 ## Example
  
 video-gallery.html
- 
 
+```HTML
     <video width="100%" height="100%" preload="none" poster="template.jpg" controls="">
         <source src="stream.php?file=/somevideo.mov">
     </video>
+```
 
 stream.php
  
-
+```PHP
     <?php
     include_once ('StreamVideo.php');
     
@@ -25,5 +26,5 @@ stream.php
     $obj->validateFile();
     $obj->setHeaders();
     $obj->streamContent();
-
+```
 > Note: Update the supportedMimes of media files in the class.
