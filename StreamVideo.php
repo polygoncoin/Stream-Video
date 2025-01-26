@@ -1,7 +1,7 @@
 <?php
 /**
  * Class to stream video contents on web.
- * 
+ *
  * @category   Streaming
  * @package    StreamVideo
  * @author     Ramesh Narayan Jangid
@@ -13,17 +13,17 @@ class StreamVideo
 {
     /**
      * Video Folder
-     * 
+     *
      * The folder location outside docroot
      * without a slash at the end
-     * 
+     *
      * @var string
      */
     private $videosFolderLocation = '/var/www/videos';
 
     /**
      * Supported Video mime types
-     * 
+     *
      * @var array
      */
     private $supportedMimes = [
@@ -32,21 +32,21 @@ class StreamVideo
 
     /**
      * Streamed Video cache duration.
-     * 
+     *
      * @var integer
      */
     private $streamCacheDuration = 7 * 24 * 3600; // 1 week
 
     /**
      * Streamed Video size for first request.
-     * 
+     *
      * @var integer
      */
     private $firstChunkSize = 128 * 1024; // 128 KB
 
     /**
      * Streamed Video size per request.
-     * 
+     *
      * @var integer
      */
     private $chunkSize = 4 * 1024 * 1024; // 4 MB
@@ -116,7 +116,7 @@ class StreamVideo
             die();
         }
     }
-    
+
     /**
      * Set headers on successful validation
      *
@@ -127,7 +127,7 @@ class StreamVideo
         header('Content-Type: ' . $this->fileMime);
         header('Cache-Control: max-age=' . $this->streamCacheDuration . ', public');
         header('Expires: '.gmdate('D, d M Y H:i:s', time() + $this->streamCacheDuration) . ' GMT');
-        header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $this->fileModifiedTimeStamp) . ' GMT'); 
+        header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $this->fileModifiedTimeStamp) . ' GMT');
         header('Accept-Ranges: 0-' . ($this->fileSize - 1));
         if ($this->streamFrom == 0) {
             $this->chunkSize = $this->firstChunkSize;
@@ -144,7 +144,7 @@ class StreamVideo
             } else {
                 $chunkSize = $this->fileSize > $this->chunkSize ? $this->chunkSize : $this->fileSize;
                 $this->streamTill = $chunkSize - 1;
-                $streamSize = $this->streamTill - $this->streamFrom + 1;    
+                $streamSize = $this->streamTill - $this->streamFrom + 1;
             }
         } else {
             if ($this->fileSize > ($this->streamFrom + $this->chunkSize)) {

@@ -1,10 +1,10 @@
 # **Stream Audio / Video**
- 
+
 Stream large audio / video files in browser.
- 
+
 
 ## Example
- 
+
 video-gallery.html
 
 ```HTML
@@ -14,7 +14,7 @@ video-gallery.html
 ```
 
 stream.php
- 
+
 ```PHP
 <?php
 include_once ('StreamVideo.php');
