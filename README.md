@@ -17,7 +17,9 @@ stream.php
 
 ```PHP
 <?php
-include_once ('StreamVideo.php');
+require_once __DIR__ . '/Autoload.php';
+
+use StreamVideo\StreamVideo;
 
 $file = $_GET['file'];
 
