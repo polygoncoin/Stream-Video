@@ -2,7 +2,6 @@
 
 Stream large audio / video files in browser.
 
-
 ## Example
 
 video-gallery.html
@@ -17,7 +16,8 @@ stream.php
 
 ```PHP
 <?php
-require_once __DIR__ . '/Autoload.php';
+
+require_once __DIR__ . '/AutoloadStreamVideo.php';
 
 use StreamVideo\StreamVideo;
 

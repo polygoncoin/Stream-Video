@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Stream Video
  * php version 7
@@ -11,7 +12,8 @@
  * @link      https://github.com/polygoncoin/Stream-Video
  * @since     Class available since Release 1.0.0
  */
-namespace CacheHandler;
+
+namespace StreamVideo;
 
 /**
  * StreamVideo
@@ -35,14 +37,14 @@ class StreamVideo
      *
      * @var string
      */
-    private $_videosFolderLocation = '/var/www/videos';
+    private $videosFolderLocation = '/var/www/videos';
 
     /**
      * Supported Video mime types
      *
      * @var array
      */
-    private $_supportedMimes = [
+    private $supportedMimes = [
         'video/quicktime'
     ];
 
@@ -51,21 +53,21 @@ class StreamVideo
      *
      * @var integer
      */
-    private $_streamCacheDuration = 7 * 24 * 3600; // 1 week
+    private $streamCacheDuration = 7 * 24 * 3600; // 1 week
 
     /**
      * Streamed Video size for first request.
      *
      * @var integer
      */
-    private $_firstChunkSize = 128 * 1024; // 128 KB
+    private $firstChunkSize = 128 * 1024; // 128 KB
 
     /**
      * Streamed Video size per request.
      *
      * @var integer
      */
-    private $_chunkSize = 4 * 1024 * 1024; // 4 MB
+    private $chunkSize = 4 * 1024 * 1024; // 4 MB
 
     /**
      * File details required in class.
@@ -98,10 +100,11 @@ class StreamVideo
         );
         // Check Range header
         $headers = getallheaders();
-        if (!isset($headers['Range']) && strpos(
-            haystack: $headers['Range'],
-            needle: 'bytes='
-        ) !== false
+        if (
+            !isset($headers['Range']) && strpos(
+                haystack: $headers['Range'],
+                needle: 'bytes='
+            ) !== false
         ) {
             header(header: "HTTP/1.1 400 Bad Request");
             die();
@@ -113,7 +116,7 @@ class StreamVideo
             string: $range
         );
         // Check path of file to be served
-        $this->absoluteFilePath = $absoluteFilePath = $this->_videosFolderLocation .
+        $this->absoluteFilePath = $absoluteFilePath = $this->videosFolderLocation .
             $relativeFilePath;
         if (!is_file(filename: $absoluteFilePath)) {
             header(header: "HTTP/1.1 404 Not Found");
@@ -139,11 +142,11 @@ class StreamVideo
      */
     public function validateFile(): void
     {
-        if (!in_array(needle: $this->fileMime, haystack: $this->_supportedMimes)) {
+        if (!in_array(needle: $this->fileMime, haystack: $this->supportedMimes)) {
             header(header: "HTTP/1.1 400 Bad Request");
             die();
         }
-        if ($this->streamFrom >= $this->fileSize ) {
+        if ($this->streamFrom >= $this->fileSize) {
             header(header: "HTTP/1.1 416 Range Not Satisfiable");
             die();
         }
@@ -158,12 +161,12 @@ class StreamVideo
     {
         $gmDate = gmdate(
             format: 'D, d M Y H:i:s',
-            timestamp: time() + $this->_streamCacheDuration
+            timestamp: time() + $this->streamCacheDuration
         );
         header(header: 'Content-Type: ' . $this->fileMime);
         header(
             header: 'Cache-Control: max-age=' .
-            $this->_streamCacheDuration . ', public'
+            $this->streamCacheDuration . ', public'
         );
         header(header: "Expires: {$gmDate} GMT");
         $gmDate = gmdate(
@@ -173,9 +176,10 @@ class StreamVideo
         header(header: "Last-Modified: {$gmDate} GMT");
         header(header: 'Accept-Ranges: 0-' . ($this->fileSize - 1));
         if ($this->streamFrom == 0) {
-            $this->_chunkSize = $this->_firstChunkSize;
+            $this->chunkSize = $this->firstChunkSize;
         }
-        if ($this->streamFrom == 0
+        if (
+            $this->streamFrom == 0
             && in_array(
                 needle: $this->streamTill,
                 haystack: ['', '1']
@@ -195,14 +199,14 @@ class StreamVideo
                 header(header: 'Content-Length: ' . $this->fileSize);
                 return;
             } else {
-                $_chunkSize = $this->fileSize > $this->_chunkSize ?
-                    $this->_chunkSize : $this->fileSize;
-                $this->streamTill = $_chunkSize - 1;
+                $chunkSize = $this->fileSize > $this->chunkSize ?
+                    $this->chunkSize : $this->fileSize;
+                $this->streamTill = $chunkSize - 1;
                 $streamSize = $this->streamTill - $this->streamFrom + 1;
             }
         } else {
-            if ($this->fileSize > ($this->streamFrom + $this->_chunkSize)) {
-                $this->streamTill = $this->streamFrom + $this->_chunkSize;
+            if ($this->fileSize > ($this->streamFrom + $this->chunkSize)) {
+                $this->streamTill = $this->streamFrom + $this->chunkSize;
             } else {
                 $this->streamTill = $this->fileSize - 1;
             }
@@ -224,7 +228,7 @@ class StreamVideo
     public function streamContent(): void
     {
         if (!($srcStream = fopen(filename: $this->absoluteFilePath, mode: 'rb'))) {
-            if (!headers_sent() ) {
+            if (!headers_sent()) {
                 header_remove();
                 header(header: "HTTP/1.1 500 Internal Server Error");
             }
